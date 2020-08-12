@@ -1,0 +1,97 @@
+﻿<div>
+    <h3>Array Callback Validation</h3>
+    <div class="--lighter">Interop Func</div>
+    <div>
+        Status:
+        @if (TestStatus == "Passed")
+        {
+            <span class="green-badge">@TestStatus</span>
+        }
+        else if (TestStatus == "Failed")
+        {
+            <span class="red-badge">@TestStatus</span>
+        }
+        else
+        {
+            <span>@TestStatus</span>
+        }
+    </div>
+    <button class="run-btn" @onclick="HandleRunTest">Run</button>
+</div>
+
+<script suppress-error="BL9992">
+    (function () {
+        const callbackActions = [];
+        window["InteropFuncArrayCallbackValidationTest"] = {
+            register: (actionHandler) => {
+                callbackActions.push(actionHandler);
+            },
+            trigger: () => {
+                callbackActions.forEach(
+                    action => action([{ id: "class1" }, { id: "class2" }, { id: "class3" }])
+                );
+            }
+        };
+    })();
+</script>
+
+@code {
+    public string TestStatus = "Pending";
+
+    private string testId => "InteropFuncArrayCallbackValidationTest";
+    private bool initialized = false;
+
+    private ClassIdCachedEntity actualClass1;
+    private string expectedClass1 = "class1";
+    private ClassIdCachedEntity actualClass2;
+    private string expectedClass2 = "class2";
+    private ClassIdCachedEntity actualClass3;
+    private string expectedClass3 = "class3";
+
+    private async Task HandleRunTest()
+    {
+        TestStatus = "Running...";
+        if (!initialized)
+        {
+            var actionHandler = new ActionCallback<List<ClassIdCachedEntity>>((arg1) =>
+            {
+                actualClass1 = arg1[0];
+                actualClass2 = arg1[1];
+                actualClass3 = arg1[2];
+                return Task.CompletedTask;
+            });
+
+            await EventHorizonBlazorInterop.Func<string>(
+                new string[] { testId, "register" },
+                actionHandler
+            );
+            initialized = true;
+        }
+
+        await RunTest();
+        await ValidateTest();
+    }
+
+    public async Task RunTest()
+    {
+        await EventHorizonBlazorInterop.Func<CachedEntity>(
+            new object[] { new string[] { testId, "trigger" } }
+        );
+    }
+
+    public async ValueTask ValidateTest()
+    {
+        var value = await actualClass1.get_Id();
+        if (await actualClass1.get_Id() == expectedClass1
+            && await actualClass2.get_Id() == expectedClass2
+            && await actualClass3.get_Id() == expectedClass3
+        )
+        {
+            TestStatus = "Passed";
+        }
+        else
+        {
+            TestStatus = "Failed";
+        }
+    }
+}

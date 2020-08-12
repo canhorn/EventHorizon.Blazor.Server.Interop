@@ -1,0 +1,39 @@
+﻿@using System.Diagnostics
+@using EventHorizon.Blazor.Server.Interop;
+
+<div>
+    <h3>Interop Get Cached Test</h3>
+    @_locationHref
+    <ReportTimeTaken Runs="_max" TimeTaken="TimeTaken" />
+    <button class="run-btn" @onclick="HandleRunTest">Run</button>
+</div>
+
+@code {
+    public TimeSpan TimeTaken { get; set; }
+
+    const int _max = 1_000;
+    private async Task HandleRunTest()
+    {
+        var s1 = Stopwatch.StartNew();
+        for (int i = 0; i < _max; i++)
+        {
+            var value = await RunTest();
+        }
+        s1.Stop();
+        TimeTaken = s1.Elapsed;
+        Console.WriteLine(((double)(s1.ElapsedMilliseconds * 1000000) / _max).ToString("0.00 ns"));
+    }
+
+    private string _locationHref;
+    public async ValueTask<string> RunTest()
+    {
+        if (_locationHref == null)
+        {
+            _locationHref = await EventHorizonBlazorInterop.Get<string>(
+                "document",
+                "location.href"
+            );
+        }
+        return _locationHref;
+    }
+}

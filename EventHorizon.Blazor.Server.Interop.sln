@@ -1,0 +1,52 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30114.105
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventHorizon.Blazor.Server.Interop", "EventHorizon.Blazor.Server.Interop\EventHorizon.Blazor.Server.Interop.csproj", "{61288348-AF25-4CAE-A2A0-629FDAEE9E9E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventHorizon.Blazor.Server.Interop.Sample", "EventHorizon.Blazor.Server.Interop.Sample\EventHorizon.Blazor.Server.Interop.Sample.csproj", "{C6A2C04E-5254-4976-99A7-CC41644B8D9B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BDF1BB12-22E3-4E8F-85E9-6DA870B48917}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		GitVersion.yml = GitVersion.yml
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{8134B7F2-4B91-4C73-8F28-DAD30D647045}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{ED036A07-BFBB-44BB-AFAD-ABAD2CEC5C55}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\azure-static-web-apps-red-smoke-0bfc1bf10.yml = .github\workflows\azure-static-web-apps-red-smoke-0bfc1bf10.yml
+		.github\workflows\dotnet-build-publish.yml = .github\workflows\dotnet-build-publish.yml
+		.github\workflows\dotnet-package.yml = .github\workflows\dotnet-package.yml
+		.github\workflows\main-tag-bump.yml = .github\workflows\main-tag-bump.yml
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{61288348-AF25-4CAE-A2A0-629FDAEE9E9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61288348-AF25-4CAE-A2A0-629FDAEE9E9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61288348-AF25-4CAE-A2A0-629FDAEE9E9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61288348-AF25-4CAE-A2A0-629FDAEE9E9E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6A2C04E-5254-4976-99A7-CC41644B8D9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6A2C04E-5254-4976-99A7-CC41644B8D9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6A2C04E-5254-4976-99A7-CC41644B8D9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6A2C04E-5254-4976-99A7-CC41644B8D9B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8134B7F2-4B91-4C73-8F28-DAD30D647045} = {BDF1BB12-22E3-4E8F-85E9-6DA870B48917}
+		{ED036A07-BFBB-44BB-AFAD-ABAD2CEC5C55} = {8134B7F2-4B91-4C73-8F28-DAD30D647045}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9497D11D-7D24-4DE2-A904-0ADE224939B6}
+	EndGlobalSection
+EndGlobal
