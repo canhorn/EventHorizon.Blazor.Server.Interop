@@ -5,7 +5,7 @@
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
 
         <AssemblyTitle>EventHorizon Blazor Interop</AssemblyTitle>
-        <Description>Utilities that make Blazor WASM C# interfacing with JavaScript easier, will triggers corresponding JavaScript functionality.</Description>
+        <Description>Utilities that make Blazor WASM C# interfacing with JavaScript easier, helps with triggering corresponding JavaScript functionality.</Description>
         <AssemblyName>EventHorizon.Blazor.Server.Interop</AssemblyName>
         <Authors>Cody Merritt Anhorn</Authors>
         <PackageId>EventHorizon.Blazor.Server.Interop</PackageId>
