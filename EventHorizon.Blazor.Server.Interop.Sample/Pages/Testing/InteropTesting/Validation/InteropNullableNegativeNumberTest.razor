@@ -1,0 +1,68 @@
+﻿<div>
+    <h3>Nullable Negative Number Validation</h3>
+    <div class="--lighter">Interop Get</div>
+    <div>
+        Status:
+        @if (TestStatus == "Passed")
+        {
+            <span class="green-badge">@TestStatus</span>
+        }
+        else if (TestStatus == "Failed")
+        {
+            <span class="red-badge">@TestStatus</span>
+        }
+        else
+        {
+            <span>@TestStatus</span>
+        }
+    </div>
+    <button class="run-btn" @onclick="HandleRunTest">Run</button>
+</div>
+
+<script suppress-error="BL9992">
+    (function () {
+        window["InteropNullableNegativeNumberTest"] = {
+            value: -1234,
+        };
+    })();
+</script>
+
+@code {
+    public string TestStatus = "Pending";
+
+    private string testId => "InteropNullableNegativeNumberTest";
+    private long? result;
+    private long expected = -1234;
+
+    private async Task HandleRunTest()
+    {
+        await RunTest();
+        ValidateTest();
+    }
+
+    public async Task RunTest()
+    {
+        try
+        {
+            result = await EventHorizonBlazorInterop.Get<long?>(
+                testId,
+                "value"
+            );
+        }
+        catch (Exception)
+        {
+        }
+    }
+
+    public void ValidateTest()
+    {
+        if (result == expected)
+        {
+            TestStatus = "Passed";
+        }
+        else
+        {
+            TestStatus = "Failed";
+        }
+    }
+}

@@ -1,0 +1,31 @@
+﻿<div>
+    Took <span class="--bold">@TimeTaken.Ticks</span> Ticks
+</div><div>
+    Average <span class="--bold">@(TimeTaken.Ticks / Runs)</span> Ticks
+</div>
+<div>
+    Took <span class="--bold">@TimeTaken.TotalMilliseconds</span> ms
+</div>
+<div>
+    Average <span class="--bold">@(TimeTaken.TotalMilliseconds / Runs)</span> ms
+</div>
+<div>
+    <span class="--bold">@(Runs / TimeTaken.TotalMilliseconds)</span> Actions per Millisecond
+</div>
+<div>
+    <span class="--bold">@(Runs / (TimeTaken.TotalMilliseconds / 1000))</span> Actions per Second
+</div>
+<div>
+    <span class="--bold">@((Runs / (TimeTaken.TotalMilliseconds)) * 16)</span> Actions per Frame
+    <div class="--lighter" style="padding-left: 10px;">(60 fps) (16 ms/frame)</div>
+</div>
+<div>
+    Runs: <span class="--bold">@(Runs)</span>
+</div>
+
+@code {
+    [Parameter]
+    public TimeSpan TimeTaken { get; set; }
+    [Parameter]
+    public long Runs { get; set; }
+}

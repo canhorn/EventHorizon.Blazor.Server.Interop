@@ -1,0 +1,38 @@
+﻿@page "/"
+@using System.Diagnostics
+@using EventHorizon.Blazor.Server.Interop.Sample.Pages.Testing.MediatrTesting
+@using EventHorizon.Blazor.Server.Interop.Sample.Pages.Testing.JSRuntimeBridge
+@using EventHorizon.Blazor.Server.Interop.Sample.Pages.Testing.JsonTesting
+@using EventHorizon.Blazor.Server.Interop.Sample.Pages.Testing.DITesting
+@using EventHorizon.Blazor.Server.Interop.Sample.Pages.Testing.InteropTesting
+
+<h1>Testing Tests</h1>
+
+<div class="testing-content">
+    <InteropCallTest />
+    <InteropFuncCallbackTest />
+    <InteropFuncTest />
+    <InteropGetArrayClassTest />
+    <InteropGetArrayTest />
+    <InteropGetCachedTest />
+    <InteropGetClassTest />
+    <InteropGetDecimalTest />
+    <InteropGetFloatTest />
+    <InteropGetIntTest />
+    <InteropGetTest />
+    <InteropNewTest />
+    <InteropRunScriptTest />
+
+    <MediatRPerformanceTest />
+    <DIPerformanceTest />
+
+    <FastJSRuntimeBridgeTest />
+    <FastJSJsonRuntimeBridgeTest />
+    <StandardJSRuntimeBridgeTest />
+
+    <ClientJsonParseTest />
+    <ClientJsonParseRawTest />
+    <StandardJsonSerializerTest />
+    <LargeJsonSerializerTest />
+    <IndividualJsonSerializerTest />
+</div>
