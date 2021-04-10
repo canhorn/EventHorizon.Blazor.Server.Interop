@@ -34,11 +34,7 @@ The EventHorizon.Blazor.Server.Interop.Sample Project contains a suite of perfor
 
 ## Use Libraries
 
-[BlazorJsFastDataExchanger](https://github.com/Lupusa87/BlazorJsFastDataExchanger)
-
 [MediatR](https://github.com/jbogard/MediatR)
-
-[Mono.WebAssembly.Interop](https://www.nuget.org/packages/Mono.WebAssembly.Interop)
 
 ## Inspiration
 
