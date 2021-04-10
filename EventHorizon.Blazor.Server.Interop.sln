@@ -18,7 +18,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{8134
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{ED036A07-BFBB-44BB-AFAD-ABAD2CEC5C55}"
 	ProjectSection(SolutionItems) = preProject
-		.github\workflows\azure-static-web-apps-red-smoke-0bfc1bf10.yml = .github\workflows\azure-static-web-apps-red-smoke-0bfc1bf10.yml
 		.github\workflows\dotnet-build-publish.yml = .github\workflows\dotnet-build-publish.yml
 		.github\workflows\dotnet-package.yml = .github\workflows\dotnet-package.yml
 		.github\workflows\main-tag-bump.yml = .github\workflows\main-tag-bump.yml
