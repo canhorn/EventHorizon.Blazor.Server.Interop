@@ -7,9 +7,9 @@
 # About
 
 The EventHorizon.Blazor.Server.Interop is a slim project I created to help with common Blazor JavaScript Interop actions. 
-This project is a derived work from the <a href="">canhorn/EventHorizon.Blazor.Interop</a> project that works with Blazor Server, with the caveat of not having the performance the other has. 
+This project is a derived work from the <a href="https://github.com/canhorn/EventHorizon.Blazor.Interop">canhorn/EventHorizon.Blazor.Interop</a> project that works with Blazor Server, with the caveat of not having the performance the other has. 
 
-The <a href="">canhorn/EventHorizon.Blazor.Interop</a> is focused on WASM, and provides the best interop performance between .NET and the JavaScript client code.
+The <a href="https://github.com/canhorn/EventHorizon.Blazor.Interop">canhorn/EventHorizon.Blazor.Interop</a> is focused on WASM, and provides the best interop performance between .NET and the JavaScript client code.
 
 ## Usage
 
