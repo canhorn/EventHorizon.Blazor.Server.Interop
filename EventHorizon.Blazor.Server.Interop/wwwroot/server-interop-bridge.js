@@ -47,7 +47,7 @@
         return { [cacheKey]: newCacheKey };
     };
     /**
-     * Check argument for existing in argumentCache and if actionCallbackType.
+     * Check argument for existing in argumentCache and if actionResultCallbackType and if actionCallbackType.
      * Returns argValue if not part argumentCache or actionCallbackType.
      * 
      * @param {any} argValue
@@ -58,6 +58,15 @@
         }
         if (argValue[cacheKey] && argumentCache.has(argValue[cacheKey])) {
             return argumentCache.get(argValue[cacheKey]);
+        } else if (argValue[typeKey] && argValue[typeKey] === actionResultCallbackType) {
+            const invokableReference = argValue["invokableReference"];
+            const method = argValue["method"];
+            return async function () {
+                console.log({ invokableReference, method, arguments, convertedARgs: convertCallbackArguments(arguments) })
+                var result = await invokableReference.invokeMethodAsync(method, ...convertCallbackArguments(arguments));
+                console.log({ result })
+                return !!result.result ? result.result : result;
+            };
         } else if (argValue[typeKey] && argValue[typeKey] === actionCallbackType) {
             const invokableReference = argValue["invokableReference"];
             const method = argValue["method"];
@@ -142,9 +151,12 @@
         return numStr;
     };
 
+    const isPromise = (obj) => typeof (obj?.then) === "function";
+
     const cacheKey = "___guid";
     const typeKey = "___type";
     const actionCallbackType = "action_callback";
+    const actionResultCallbackType = "action_result_callback";
     window["blazorInterop"] = {
         /**
          * This will call a function on a cached object.
@@ -168,9 +180,9 @@
                 if (typeof (value) === "number") {
                     value = numberToString(value);
                 }
-                return value;
+                return value.toString();
             } catch (ex) {
-                console.log("error", ex);
+                console.log("error", { ex, args });
             }
         },
         /**
@@ -200,7 +212,7 @@
 
                 return value[cacheKey];
             } catch (ex) {
-                console.log("error", ex);
+                console.log("error", { ex, args });
             }
         },
         /**
@@ -231,7 +243,7 @@
 
                 return result;
             } catch (ex) {
-                console.log("error", ex);
+                console.log("error", { ex, args });
                 return [];
             }
         },
@@ -264,7 +276,7 @@
 
                 return result;
             } catch (ex) {
-                console.log("error", ex);
+                console.log("error", { ex, root, identifier });
             }
         },
         /**
@@ -284,7 +296,7 @@
                 }
                 return values;
             } catch (ex) {
-                console.log("error", ex);
+                console.log("error", { ex, root, identifier });
             }
         },
         /**
@@ -311,7 +323,7 @@
 
                 obj[identifier[identifier.length - 1]] = value;
             } catch (ex) {
-                console.log("error", ex);
+                console.log("error", { ex, root, identifier, value });
             }
         },
         /**
@@ -341,7 +353,7 @@
                     }
                 }
             } catch (ex) {
-                console.log("error", ex);
+                console.log("error", { ex, arguments });
                 throw { message: "invalid_call", code: "invalid_call" };
             }
         },
@@ -365,7 +377,7 @@
                     [cacheKey]: newObject[cacheKey]
                 };
             } catch (ex) {
-                console.log("error", ex);
+                console.log("error", { ex, arguments });;
             }
             throw { code: "invalid_call" };
         },
@@ -389,7 +401,7 @@
                 }
                 return createNew.call(context, ...args);
             } catch (ex) {
-                console.log("error", ex);
+                console.log("error", { ex, arguments });
             }
             return undefined;
         },
@@ -398,30 +410,35 @@
          * arguments[0] = Identifier
          * arguments[1...n] = Function Arguments
          **/
-        funcClass: function () {
+        funcClass: async function () {
             try {
                 var identifier = arguments[0];
-                var createNew = window[identifier[0]];
+                var instance = window[identifier[0]];
                 if (argumentCache.has(identifier[0])) {
-                    createNew = argumentCache.get(identifier[0]);
+                    instance = argumentCache.get(identifier[0]);
                 }
                 var args = convertArgs(arguments);
                 var context = window;
                 for (var i = 1; i < identifier.length; i++) {
-                    context = createNew;
-                    createNew = createNew[identifier[i]];
+                    context = instance;
+                    instance = instance[identifier[i]];
                 }
-                var newObject = createNew.call(context, ...args);
-                if (typeof (newObject) === "object"
-                    && !Array.isArray(newObject)
+                var result = instance.call(context, ...args);
+                if (isPromise(result)) {
+                    result = await result;
+                }
+                let newCacheKey = result[cacheKey];
+                if (typeof (result) === "object"
+                    && !Array.isArray(result)
+                    && !newCacheKey
                 ) {
-                    const newCacheKey = guid();
-                    newObject[cacheKey] = newCacheKey;
-                    argumentCache.set(newCacheKey, newObject);
-                    return newCacheKey;
+                    newCacheKey = guid();
+                    result[cacheKey] = newCacheKey;
+                    argumentCache.set(newCacheKey, result);
                 }
+                return newCacheKey;
             } catch (ex) {
-                console.log("error", ex);
+                console.log("error", { ex, arguments });
             }
             return undefined;
         },
@@ -430,25 +447,28 @@
          * arguments[0] = Identifier
          * arguments[1...n] = Function Arguments
          **/
-        funcArray: function () {
+        funcArray: async function () {
             try {
                 var identifier = arguments[0];
-                var createNew = window[identifier[0]];
+                var instance = window[identifier[0]];
                 if (argumentCache.has(identifier[0])) {
-                    createNew = argumentCache.get(identifier[0]);
+                    instance = argumentCache.get(identifier[0]);
                 }
                 var args = convertArgs(arguments);
                 var context = window;
                 for (var i = 1; i < identifier.length; i++) {
-                    context = createNew;
-                    createNew = createNew[identifier[i]];
+                    context = instance;
+                    instance = instance[identifier[i]];
                 }
-                var result = createNew.call(context, ...args);
+                var result = instance.call(context, ...args);
+                if (isPromise(result)) {
+                    result = await result;
+                }
                 if (Array.isArray(result)) {
                     return result;
                 }
             } catch (ex) {
-                console.log("error", ex);
+                console.log("error", { ex, arguments });
             }
             return [];
         },
@@ -457,7 +477,7 @@
          * arguments[0] = Identifier
          * arguments[1...n] = Function Arguments
          **/
-        funcArrayClass: function () {
+        funcArrayClass: async function () {
             try {
                 var identifier = arguments[0];
                 var createNew = window[identifier[0]];
@@ -472,6 +492,9 @@
                 }
 
                 var funcResults = createNew.call(context, ...args);
+                if (isPromise(funcResults)) {
+                    funcResults = await funcResults;
+                }
                 const results = [];
                 for (var value of funcResults) {
                     if (!argumentCache.has(value[cacheKey])) {
@@ -485,7 +508,7 @@
 
                 return results;
             } catch (ex) {
-                console.log("error", ex);
+                console.log("error", { ex, arguments });
             }
             return [];
         },
@@ -514,7 +537,7 @@
                 }
                 return await obj.call(context, ...args);
             } catch (ex) {
-                console.log("error", ex);
+                console.log("error", { ex, arguments });
             }
             return undefined;
         },
@@ -551,7 +574,7 @@
                     return newCacheKey;
                 }
             } catch (ex) {
-                console.log("error", ex);
+                console.log("error", { ex, arguments });
             }
             return undefined;
         },
@@ -583,7 +606,7 @@
                     return result;
                 }
             } catch (ex) {
-                console.log("error", ex);
+                console.log("error", { ex, arguments });
             }
             return [];
         },
@@ -625,7 +648,7 @@
 
                 return results;
             } catch (ex) {
-                console.log("error", ex);
+                console.log("error", { ex, arguments });
             }
             return [];
         },
