@@ -1,14 +1,13 @@
-﻿using System.Text.Json.Serialization;
+﻿namespace EventHorizon.Blazor.Server.Interop;
 
-namespace EventHorizon.Blazor.Server.Interop
+using System.Text.Json.Serialization;
+
+/// <summary>
+/// A base class that is created as an easy way to interface with Client side implementation.
+/// </summary>
+[JsonConverter(typeof(CachedEntityConverter<CachedEntity>))]
+public class CachedEntity : ICachedEntity
 {
-    /// <summary>
-    /// A base class that is created as an easy way to interface with Client side implementation.
-    /// </summary>
-    [JsonConverter(typeof(CachedEntityConverter<CachedEntity>))]
-    public class CachedEntity : ICachedEntity
-    {
-        /// <inheritdoc />
-        public string ___guid { get; set; }
-    }
+    /// <inheritdoc />
+    public string ___guid { get; set; }
 }

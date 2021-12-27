@@ -23,7 +23,7 @@ In "App.razor"
 
     protected override void OnInitialized()
     {
-        await EventHorizonBlazorInterop.JSRuntime = JSRuntime;
+        EventHorizonBlazorInterop.JSRuntime = JSRuntime;
     }
 }
 ~~~

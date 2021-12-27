@@ -1,0 +1,84 @@
+﻿<div>
+    <h3>Array Class Result Callback Validation</h3>
+    <div class="--lighter">Interop FuncArrayClass</div>
+    <div>
+        Status:
+        @if (TestStatus == "Passed")
+        {
+            <span class="green-badge">@TestStatus</span>
+        }
+        else if (TestStatus == "Failed")
+        {
+            <span class="red-badge">@TestStatus</span>
+        }
+        else
+        {
+            <span>@TestStatus</span>
+        }
+    </div>
+    <button class="run-btn" @onclick="HandleRunTest">Run</button>
+</div>
+
+<script suppress-error="BL9992">
+    (function () {
+        const callbackActions = [];
+        window["InteropResultArrayClassCallbackValidationTest"] = {
+            trigger: (returnResult, predicate) => {
+                return predicate(returnResult);
+            }
+        };
+    })();
+</script>
+
+@code {
+    public string TestStatus = "Pending";
+
+    private string testId => "InteropResultArrayClassCallbackValidationTest";
+    private bool initialized = false;
+
+    private async Task HandleRunTest()
+    {
+        TestStatus = "Running...";
+        if (!initialized)
+        {
+            var expectedArg = "testing-returned-result";
+            var actionHandler = new ActionResultCallback<string, TestClass[]>(async (arg1) =>
+            {
+                if (arg1 == expectedArg)
+                {
+                    var testClass1 = await TestClass.NewTestClass();
+                    await testClass1.set_Found(true);
+                    await testClass1.set_Arg1(arg1);
+                    var testClass2 = await TestClass.NewTestClass();
+                    await testClass2.set_Found(true);
+                    await testClass2.set_Arg1(arg1);
+
+                    return new[] 
+                    {
+                        testClass1,
+                        testClass2,
+                    };
+                }
+                return new TestClass[0];
+            });
+
+
+            var result = await EventHorizonBlazorInterop.FuncArrayClass<TestClass>(
+                entity => new TestClass(entity),
+                new string[] { testId, "trigger" },
+                expectedArg,
+                actionHandler
+            );
+            initialized = true;
+            TestStatus = "Failed";
+            if (await result[0].get_Found()
+                && await result[0].get_Arg1() == expectedArg
+                && await result[1].get_Found()
+                && await result[1].get_Arg1() == expectedArg
+            )
+            {
+                TestStatus = "Passed";
+            }
+        }
+    }
+}

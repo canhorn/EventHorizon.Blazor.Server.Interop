@@ -1,13 +1,12 @@
-﻿namespace EventHorizon.Blazor.Server.Interop
+﻿namespace EventHorizon.Blazor.Server.Interop;
+
+/// <summary>
+/// The API contract that helps to connect the .NET to the Client.
+/// </summary>
+public interface ICachedEntity
 {
     /// <summary>
-    /// The API contract that helps to connect the .NET to the Client.
+    /// The Client identifier for this specific entity.
     /// </summary>
-    public interface ICachedEntity
-    {
-        /// <summary>
-        /// The Client identifier for this specific entity.
-        /// </summary>
-        string ___guid { get; set; }
-    }
+    string ___guid { get; set; }
 }
