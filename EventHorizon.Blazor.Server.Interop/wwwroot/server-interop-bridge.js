@@ -8,7 +8,10 @@
         argumentCache,
         methodCache,
     };
-    const CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".split("");
+    const CHARS =
+        "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".split(
+            ""
+        );
     const guid = () => {
         var chars = CHARS,
             uuid = new Array(36),
@@ -20,7 +23,9 @@
             } else if (i === 14) {
                 uuid[i] = "4";
             } else {
-                if (rnd <= 0x02) { rnd = (0x2000000 + Math.random() * 0x1000000) | 0; }
+                if (rnd <= 0x02) {
+                    rnd = (0x2000000 + Math.random() * 0x1000000) | 0;
+                }
                 r = rnd & 0xf;
                 rnd = rnd >> 4;
                 uuid[i] = chars[i === 19 ? (r & 0x3) | 0x8 : r];
@@ -49,36 +54,46 @@
     /**
      * Check argument for existing in argumentCache and if actionResultCallbackType and if actionCallbackType.
      * Returns argValue if not part argumentCache or actionCallbackType.
-     * 
+     *
      * @param {any} argValue
      */
     const convertArg = (argValue) => {
-        if (!argValue) {
-            return null;
+        if (!argValue == null || argValue == undefined) {
+            return undefined;
         }
         if (argValue[cacheKey] && argumentCache.has(argValue[cacheKey])) {
             return argumentCache.get(argValue[cacheKey]);
-        } else if (argValue[typeKey] && argValue[typeKey] === actionResultCallbackType) {
+        } else if (
+            argValue[typeKey] &&
+            argValue[typeKey] === actionResultCallbackType
+        ) {
             const invokableReference = argValue["invokableReference"];
             const method = argValue["method"];
             return async function () {
-                console.log({ invokableReference, method, arguments, convertedARgs: convertCallbackArguments(arguments) })
-                var result = await invokableReference.invokeMethodAsync(method, ...convertCallbackArguments(arguments));
-                console.log({ result })
+                var result = await invokableReference.invokeMethodAsync(
+                    method,
+                    ...convertCallbackArguments(arguments)
+                );
                 return !!result.result ? result.result : result;
             };
-        } else if (argValue[typeKey] && argValue[typeKey] === actionCallbackType) {
+        } else if (
+            argValue[typeKey] &&
+            argValue[typeKey] === actionCallbackType
+        ) {
             const invokableReference = argValue["invokableReference"];
             const method = argValue["method"];
             return async function () {
-                await invokableReference.invokeMethodAsync(method, ...convertCallbackArguments(arguments));
+                await invokableReference.invokeMethodAsync(
+                    method,
+                    ...convertCallbackArguments(arguments)
+                );
             };
         }
         return argValue;
     };
     /**
      * Loop through all the argumentArray items and convert the args to usable references.
-     * 
+     *
      * @param {any} argumentArray
      */
     const convertArgs = (argumentArray) => {
@@ -86,7 +101,12 @@
         for (var i = 1; i < argumentArray.length; i++) {
             const arg = convertArg(argumentArray[i]);
 
-            if (arg && typeof (arg) === "object" && !arg[cacheKey] && !Array.isArray(arg)) {
+            if (
+                arg &&
+                typeof arg === "object" &&
+                !arg[cacheKey] &&
+                !Array.isArray(arg)
+            ) {
                 // Object literal: { prop: "hi", prop2: { ___type: "action_callback" } }
                 const newArg = {};
                 for (const key in arg) {
@@ -110,9 +130,7 @@
     const convertCallbackArguments = (callbackArguments) => {
         const args = [];
         for (var arg of callbackArguments) {
-            if (typeof (arg) === "object"
-                && !Array.isArray(arg)
-            ) {
+            if (typeof arg === "object" && !Array.isArray(arg)) {
                 args.push(cacheEntity(arg));
             } else if (Array.isArray(arg)) {
                 args.push(arg.map(cacheEntity));
@@ -130,28 +148,28 @@
         let numStr = String(num);
 
         if (Math.abs(num) < 1.0) {
-            let e = parseInt(num.toString().split('e-')[1]);
+            let e = parseInt(num.toString().split("e-")[1]);
             if (e) {
                 let negative = num < 0;
-                if (negative) num *= -1
+                if (negative) num *= -1;
                 num *= Math.pow(10, e - 1);
-                numStr = '0.' + (new Array(e)).join('0') + num.toString().substring(2);
+                numStr =
+                    "0." + new Array(e).join("0") + num.toString().substring(2);
                 if (negative) numStr = "-" + numStr;
             }
-        }
-        else {
-            let e = parseInt(num.toString().split('+')[1]);
+        } else {
+            let e = parseInt(num.toString().split("+")[1]);
             if (e > 20) {
                 e -= 20;
                 num /= Math.pow(10, e);
-                numStr = num.toString() + (new Array(e + 1)).join('0');
+                numStr = num.toString() + new Array(e + 1).join("0");
             }
         }
 
         return numStr;
     };
 
-    const isPromise = (obj) => typeof (obj?.then) === "function";
+    const isPromise = (obj) => typeof obj?.then === "function";
 
     const cacheKey = "___guid";
     const typeKey = "___type";
@@ -177,7 +195,7 @@
                     value = value[identifier[i]];
                 }
 
-                if (typeof (value) === "number") {
+                if (typeof value === "number") {
                     value = numberToString(value);
                 }
                 return value.toString();
@@ -301,7 +319,7 @@
         },
         /**
          * This will set a the passed in value on the identifier starting at the root.
-         * 
+         *
          * @param root Property Name from window or Cached Entity GUID
          * @param identifier Property to get from Root
          * @param value The value to set at the root.identifier
@@ -339,7 +357,11 @@
                 var args = [];
                 for (var i = 2; i < arguments.length; i++) {
                     var arg = arguments[i];
-                    if (arg && arg[cacheKey] && argumentCache.has(arg[cacheKey])) {
+                    if (
+                        arg &&
+                        arg[cacheKey] &&
+                        argumentCache.has(arg[cacheKey])
+                    ) {
                         args.push(argumentCache.get(arg[cacheKey]));
                     } else {
                         args.push(arg);
@@ -374,10 +396,10 @@
                 newObject[cacheKey] = guid();
                 argumentCache.set(newObject[cacheKey], newObject);
                 return {
-                    [cacheKey]: newObject[cacheKey]
+                    [cacheKey]: newObject[cacheKey],
                 };
             } catch (ex) {
-                console.log("error", { ex, arguments });;
+                console.log("error", { ex, arguments });
             }
             throw { code: "invalid_call" };
         },
@@ -428,9 +450,10 @@
                     result = await result;
                 }
                 let newCacheKey = result[cacheKey];
-                if (typeof (result) === "object"
-                    && !Array.isArray(result)
-                    && !newCacheKey
+                if (
+                    typeof result === "object" &&
+                    !Array.isArray(result) &&
+                    !newCacheKey
                 ) {
                     newCacheKey = guid();
                     result[cacheKey] = newCacheKey;
@@ -565,8 +588,9 @@
                     obj = obj[identifier[i]];
                 }
                 var newObject = await obj.call(context, ...args);
-                if (typeof (newObject) === "object"
-                    && !Array.isArray(newObject)
+                if (
+                    typeof newObject === "object" &&
+                    !Array.isArray(newObject)
                 ) {
                     const newCacheKey = guid();
                     newObject[cacheKey] = newCacheKey;
@@ -663,14 +687,14 @@
                     "$args",
                     methodRunner.script
                 );
-                methodCache.set(
-                    methodRunner.methodName,
-                    script
-                );
+                methodCache.set(methodRunner.methodName, script);
             }
-            script({
-                argumentCache,
-            }, methodRunner.args);
+            script(
+                {
+                    argumentCache,
+                },
+                methodRunner.args
+            );
         },
         /**
          * This will create a callback function and trigger the args
@@ -685,17 +709,16 @@
 
             const cachedEntity = argumentCache.get(entity);
             cachedEntity[funcCallbackName](function () {
-                invokableReference.invokeMethodAsync(referenceMethod, ...convertCallbackArguments(arguments));
+                invokableReference.invokeMethodAsync(
+                    referenceMethod,
+                    ...convertCallbackArguments(arguments)
+                );
             });
         },
         /**
          * This will create a callback function and trigger the assembly callback
          **/
-        assemblyFuncCallback: (
-            identifier,
-            assemblyName,
-            referenceCallback
-        ) => {
+        assemblyFuncCallback: (identifier, assemblyName, referenceCallback) => {
             var identifier = identifier.split(".");
             var func = window[identifier[0]];
             for (var i = 1; i < identifier.length; i++) {
@@ -703,22 +726,19 @@
             }
 
             func(function (/* TODO: Support passing back props */) {
-                DotNet.invokeMethodAsync(assemblyName, referenceCallback)
+                DotNet.invokeMethodAsync(assemblyName, referenceCallback);
             });
         },
         /**
          * This will create a cachedEntity from the prop on the passed in entity.
          **/
-        cacheEntity: (
-            identifier,
-            prop
-        ) => {
+        cacheEntity: (identifier, prop) => {
             const cachedEntity = argumentCache.get(identifier);
             var newObject = cachedEntity[prop];
             newObject[cacheKey] = guid();
             argumentCache.set(newObject[cacheKey], newObject);
             return {
-                [cacheKey]: newObject[cacheKey]
+                [cacheKey]: newObject[cacheKey],
             };
         },
     };
