@@ -197,10 +197,13 @@
 
                 if (typeof value === "number") {
                     value = numberToString(value);
+                } else if (value == undefined || value == null) {
+                    return null;
                 }
+
                 return value.toString();
             } catch (ex) {
-                console.log("error", { ex, args });
+                console.log("error", { ex, root, identifier });
             }
         },
         /**

@@ -11,20 +11,20 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
       with:
         fetch-depth: '0'
     - name: Install GitVersion
-      uses: gittools/actions/gitversion/setup@v0.9.6
+      uses: gittools/actions/gitversion/setup@v3.0
       with:
         versionSpec: '5.x'
     - name: Use GitVersion
       id: gitversion # step id used as reference for output values
-      uses: gittools/actions/gitversion/execute@v0.9.6
+      uses: gittools/actions/gitversion/execute@v3.0
       with:
-        additionalArguments: '/updateAssemblyInfo'
+        updateAssemblyInfo: true
     - run: |
-        echo "NuGetVersionV2: ${{ steps.gitversion.outputs.NuGetVersionV2 }}"
+        echo "FullSemVer: ${{ steps.gitversion.outputs.fullSemVer }}"
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
@@ -32,6 +32,6 @@ jobs:
     - name: Build with dotnet
       run: dotnet build --configuration Release ./EventHorizon.Blazor.Server.Interop/EventHorizon.Blazor.Server.Interop.csproj
     - name: Pack with dotnet
-      run: dotnet pack EventHorizon.Blazor.Server.Interop/EventHorizon.Blazor.Server.Interop.csproj --output nuget-packages --configuration Release -p:PackageVersion=${{ steps.gitversion.outputs.NuGetVersionV2 }}
+      run: dotnet pack EventHorizon.Blazor.Server.Interop/EventHorizon.Blazor.Server.Interop.csproj --output nuget-packages --configuration Release -p:PackageVersion=${{ steps.gitversion.outputs.fullSemVer }}
     - name: Push with dotnet
       run: dotnet nuget push nuget-packages/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
