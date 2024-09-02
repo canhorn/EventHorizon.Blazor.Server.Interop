@@ -168,8 +168,10 @@
 
         return numStr;
     };
-
-    const isPromise = (obj) => typeof obj?.then === "function";
+    const isPromise = (obj) =>
+        typeof obj?.then === "function" &&
+        typeof obj?.finally === "function" &&
+        typeof obj?.catch === "function";
 
     const cacheKey = "___guid";
     const typeKey = "___type";
@@ -233,7 +235,7 @@
 
                 return value[cacheKey];
             } catch (ex) {
-                console.log("error", { ex, args });
+                console.log("error", { ex, root, identifier });
             }
         },
         /**
@@ -264,7 +266,7 @@
 
                 return result;
             } catch (ex) {
-                console.log("error", { ex, args });
+                console.log("error", { ex, root, identifier });
                 return [];
             }
         },
